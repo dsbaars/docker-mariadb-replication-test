@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  member1:
+    image: "mariadb:10.6"
+    restart: 'unless-stopped'
+    volumes:
+      - "./data/member1/data:/var/lib/mysql"
+      - "./data/member1/my.cnf:/etc/mysql/conf.d/00-member1.cnf"
+      - "./data/member1/init.sql:/docker-entrypoint-initdb.d/00-init.sql"
+    environment:
+      MARIADB_ROOT_PASSWORD: "1b39dbbf09efccdb21d9bdd557d9e55aba4742d562b64455f334536ba3bf824721ddbab579edc8c1955a425f1f32ef93"
+      MARIADB_DATABASE: "replicate_db"
+      MARIADB_USER: "myrepltest"
+      MARIADB_PASSWORD: "47a7c4adf78d4844d70612636e4ec2b9d508ae9ee63ff1f12682836d4160c2a5e4e9823a7080bb10cd14105968711e8c"
+    networks:
+      default:
+        ipv4_address: 10.24.16.101
+  member2:
+    image: "mariadb:10.6"
+    restart: 'unless-stopped'
+    volumes:
+      - "./data/member2/data:/var/lib/mysql"
+      - "./data/member2/my.cnf:/etc/mysql/conf.d/00-member2.cnf"
+      - "./data/member2/init.sql:/docker-entrypoint-initdb.d/00-init.sql"
+    environment:
+      MARIADB_ROOT_PASSWORD: "db2b73d013bf7bfb847f2c19546e25fd9a63652d15bd87e478b8eb7d9a457692773433c6281349b96effbe49da5bba8c"
+      MARIADB_DATABASE: "replicate_db"
+      MARIADB_USER: "myrepltest"
+      MARIADB_PASSWORD: "54bd6b87972e7a067e8bd69d004cbca63ccada798a99424e619ff12989939f8944810e487cbc5ef57dd2c1c6241c0a54"
+    networks:
+      default:
+        ipv4_address: 10.24.16.102
+  # member3:
+  #   image: "mariadb:10.6"
+  #   restart: 'always'
+  #   volumes:
+  #     - "./data/member3:/var/lib/mysql/data"
+  #   environment:
+  #     MARIADB_ROOT_PASSWORD: "0004fcac2d90bd269a06c549252c9303e6e130d7ca2a86a287b16114970c1a2c"
+  #     MARIADB_DATABASE: "myrepltest"
+  #     MARIADB_USER: "myrepltest"
+  #     MARIADB_PASSWORD: "3d40969cc617f2cdfdfd47fe87c167e4a1776f223d5051ad2463f65c59cd2790"
+  #   networks:
+  #     default:
+  #       ipv4_address: 10.24.16.103
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.24.16.0/24
+      driver: default
+    name: mariadbrepl
